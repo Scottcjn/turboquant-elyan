@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 #include "ggml-turboquant-vsx.h"
 
 #include <assert.h>

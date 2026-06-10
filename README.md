@@ -1,3 +1,5 @@
+[![BCOS Certified](https://img.shields.io/badge/BCOS-Certified-brightgreen?style=flat)](BCOS.md)
+
 # TurboQuant-Elyan: POWER8 VSX + CUDA TQ3 KV Cache Compression
 
 Production-ready implementations of Google's [TurboQuant](https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/) (ICLR 2026) 3-bit KV cache quantization for **IBM POWER8 VSX** and **NVIDIA CUDA** GPUs.

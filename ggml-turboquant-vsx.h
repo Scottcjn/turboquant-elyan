@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 /*
  * ggml-turboquant-vsx.h — TQ3 (3-bit) KV Cache Quantization for POWER8 VSX
  *
