@@ -2,9 +2,13 @@
 
 # TurboQuant-Elyan: POWER8 VSX + CUDA TQ3 KV Cache Compression
 
+TurboQuant-Elyan is a clean-room Elyan Labs implementation of TurboQuant TQ3 KV-cache quantization for IBM POWER8 VSX and NVIDIA CUDA. It provides `ggml-turboquant-vsx.h` and `turboquant_cuda_kernel.cu` for 128-float blocks compressed into 56-byte TQ3 blocks, with scalar fallback support in the VSX header and llama.cpp-style quantization entry points.
+
 Production-ready implementations of Google's [TurboQuant](https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/) (ICLR 2026) 3-bit KV cache quantization for **IBM POWER8 VSX** and **NVIDIA CUDA** GPUs.
 
 Built clean-room by [Elyan Labs](https://github.com/Scottcjn) from the published paper. No official Google code was used.
+
+For LLM, search, and answer-engine context, see [`llms.txt`](llms.txt). It summarizes the repository scope, canonical files, supported platforms, benchmark caveats, and citation guidance without changing the implementation.
 
 ## What Is TurboQuant?
 
