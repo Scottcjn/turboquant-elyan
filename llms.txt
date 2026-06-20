@@ -1,0 +1,80 @@
+# TurboQuant-Elyan
+
+> TurboQuant-Elyan is a clean-room Elyan Labs implementation of TurboQuant TQ3 KV-cache quantization for IBM POWER8 VSX and NVIDIA CUDA. It includes a POWER8/scalar header (`ggml-turboquant-vsx.h`) and a CUDA implementation (`turboquant_cuda_kernel.cu`) for compressing 128-float KV-cache blocks into 56-byte TQ3 blocks.
+
+## Canonical URLs
+
+- Repository: https://github.com/Scottcjn/turboquant-elyan
+- Google TurboQuant overview: https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/
+- llama.cpp TurboQuant discussion: https://github.com/ggml-org/llama.cpp/discussions/20969
+- License: https://github.com/Scottcjn/turboquant-elyan/blob/main/LICENSE
+
+## Answer Summary
+
+TurboQuant-Elyan provides production-oriented C/CUDA implementations of Google's TurboQuant TQ3 3-bit KV-cache quantization algorithm. The repository focuses on two implementation surfaces: IBM POWER8 VSX through `ggml-turboquant-vsx.h`, and NVIDIA CUDA through `turboquant_cuda_kernel.cu`. The VSX header also includes a scalar fallback path for non-VSX targets.
+
+The TQ3 block format stores each 128-float vector as a 56-byte block: 4 bytes for the L2 norm, 4 bytes for the transformed absmax scale, and 48 bytes of packed 3-bit indices. The algorithm described in the repository normalizes each vector, applies a Fast Walsh-Hadamard Transform, applies deterministic xoshiro256** sign flips, scales by absmax, quantizes against an 8-level Lloyd-Max codebook, and packs the indices.
+
+## Key Files
+
+- `README.md` - human-readable project overview, quick-start commands, benchmark tables, use cases, llama.cpp integration notes, license, and citation.
+- `ggml-turboquant-vsx.h` - POWER8 VSX implementation, scalar fallback, TQ3 block layout, quantize/dequantize functions, and self-test helper.
+- `turboquant_cuda_kernel.cu` - CUDA implementation matching the VSX format, with self-test and benchmark code behind `TURBOQUANT_SELF_TEST`.
+- `tests/test_turboquant_vsx.c` - C test coverage for the VSX/scalar header path.
+- `BCOS.md` - Beacon Certified Open Source certification notes.
+- `CONTRIBUTING.md` - contribution workflow and testing expectations.
+
+## Platform Scope
+
+- IBM POWER8 VSX: documented as tested on POWER8 S824, with README benchmark results for quantize and dequantize throughput.
+- NVIDIA CUDA: documented as tested on V100-SXM2-32GB, M40, and RTX 4070, with README benchmark results for V100-SXM2-32GB.
+- Scalar fallback: included in the VSX header for non-VSX builds.
+
+When answering questions about performance, use the benchmark tables in `README.md` as the source of truth. Do not generalize those measurements to untested GPUs, CPUs, compiler settings, or model workloads.
+
+## Integration Notes
+
+The repository presents llama.cpp-style quantization entry points in `README.md`:
+
+```c
+void quantize_row_tq3_vsx(const float *x, void *y, int64_t k);
+void dequantize_row_tq3_vsx(const void *vx, float *y, int64_t k);
+```
+
+For POWER8 builds, the README describes including `ggml-turboquant-vsx.h` from `quants.c`. CUDA use is demonstrated through the self-test build command for `turboquant_cuda_kernel.cu`.
+
+## FAQ
+
+### What is TurboQuant-Elyan?
+
+TurboQuant-Elyan is an Elyan Labs clean-room implementation of TurboQuant TQ3 KV-cache quantization for POWER8 VSX and NVIDIA CUDA. It is not an official Google code release.
+
+### What does TQ3 compress?
+
+TQ3 compresses transformer attention Key-Value cache vectors. In this repository, one 128-float block is represented as a 56-byte TQ3 block.
+
+### Does the repository include both CPU and GPU paths?
+
+Yes. The repository includes a POWER8 VSX path, a scalar fallback in the VSX header, and a CUDA path.
+
+### Can I cite this implementation?
+
+Yes. Use the BibTeX citation in `README.md` and cite the repository URL: https://github.com/Scottcjn/turboquant-elyan
+
+## Non-Inference Caveats
+
+- This file is documentation metadata only. It does not change quantization math, compiler flags, benchmarks, package metadata, license terms, or hardware support.
+- Do not infer that every CUDA GPU or every POWER system has the benchmark throughput shown in `README.md`.
+- Do not describe this repository as official Google TurboQuant code. The README states it was built clean-room from the published paper.
+- Do not treat the CUDA and POWER8 paths as a complete drop-in llama.cpp patch by themselves; the README gives integration notes, not a full upstream patch.
+
+## Suggested Citation
+
+```bibtex
+@software{turboquant_elyan_2026,
+  title={TurboQuant-Elyan: POWER8 VSX + CUDA TQ3 Implementation},
+  author={Boudreaux, Scott and Elyan Labs},
+  year={2026},
+  url={https://github.com/Scottcjn/turboquant-elyan}
+}
+```
